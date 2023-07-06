@@ -1,0 +1,22 @@
+
+###
+### Request 1: POST signup Request ###
+###
+POST http://127.0.0.1:8080/signup
+Content-Type: application/json
+
+{
+  "username": "test-user123",
+  "password": "testpassword123"
+}
+
+###
+### Request 2: POST signin Request ###
+###
+POST http://127.0.0.1:8080/signin
+Content-Type: application/json
+
+{
+  "username": "test-user123",
+  "password": "testpassword123"
+}
