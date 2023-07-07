@@ -1,9 +1,9 @@
 package com.example.plugins
 
-import com.example.data.routes.login.signInRoute
-import com.example.data.routes.login.signUpRoute
-import com.example.data.routes.user.authenticationTestRoute
-import com.example.data.routes.user.getUserIdRoute
+import com.example.routes.login.signInRoute
+import com.example.routes.login.signUpRoute
+import com.example.routes.user.authenticationTestRoute
+import com.example.routes.user.getUserIdRoute
 import com.example.data.user.MongoUserDataSource
 import com.example.db.getDatabaseClient
 import io.ktor.server.routing.*

@@ -1,7 +1,7 @@
-package com.example.data.routes.login
+package com.example.routes.login
 
-import com.example.data.requests.AuthRequest
-import com.example.data.responses.AuthResponse
+import com.example.security.auth_models.AuthRequest
+import com.example.security.auth_models.AuthResponse
 import com.example.data.user.MongoUserDataSource
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.hashing.SaltedHash
