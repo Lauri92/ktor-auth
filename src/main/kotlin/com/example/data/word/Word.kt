@@ -8,5 +8,5 @@ data class Word(
     @BsonId val id: ObjectId = ObjectId(),
     val hanzi: String,
     val pinyin: String,
-    val english: List<String>
+    val englishTranslations: List<String>
 )

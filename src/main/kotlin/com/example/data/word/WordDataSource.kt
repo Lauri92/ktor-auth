@@ -1,5 +1,6 @@
 package com.example.data.word
 
+import org.bson.BsonValue
 import org.bson.types.ObjectId
 
 interface WordDataSource {

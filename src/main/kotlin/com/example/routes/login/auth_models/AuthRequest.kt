@@ -1,4 +1,4 @@
-package com.example.security.auth_models
+package com.example.routes.login.auth_models
 
 import kotlinx.serialization.Serializable
 
