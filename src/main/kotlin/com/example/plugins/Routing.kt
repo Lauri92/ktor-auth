@@ -1,27 +1,24 @@
 package com.example.plugins
 
 import com.example.authenticate
-import com.example.data.user.UserDataSource
+import com.example.data.routes.login.signInRoute
+import com.example.data.routes.login.signUpRoute
+import com.example.data.user.MongoUserDataSource
+import com.example.db.getDatabaseClient
 import com.example.getSecretInfo
-import com.example.security.hashing.HashingService
-import com.example.security.token.TokenConfig
-import com.example.security.token.TokenService
-import com.example.signIn
-import com.example.signUp
 import io.ktor.server.routing.*
-import io.ktor.server.response.*
 import io.ktor.server.application.*
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
 
-fun Application.configureRouting(
-    userDataSource: UserDataSource,
-    hashingService: HashingService,
-    tokenService: TokenService,
-    tokenConfig: TokenConfig
+fun Application.configureRouting() {
 
-) {
+    val db = getDatabaseClient()
+    val userDataSource = MongoUserDataSource(db)
+
     routing {
-        signUp(hashingService, userDataSource)
-        signIn(hashingService, userDataSource, tokenService, tokenConfig)
+        signUpRoute(userDataSource)
+        signInRoute(userDataSource)
         authenticate()
         getSecretInfo()
     }

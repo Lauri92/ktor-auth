@@ -1,10 +1,10 @@
-package com.example.plugins
+package com.example.db
 
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 
-fun configureDatabase(): CoroutineDatabase {
+fun getDatabaseClient(): CoroutineDatabase {
     val mongoPw = System.getenv("MONGO_PW")
     val mongoUser = System.getenv("MONGO_USER")
     val mongoCluster = System.getenv("MONGO_CLUSTER")

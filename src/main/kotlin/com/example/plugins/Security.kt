@@ -7,7 +7,15 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 
-fun Application.configureSecurity(tokenConfig: TokenConfig) {
+fun Application.configureSecurity() {
+
+    val tokenConfig = TokenConfig(
+        issuer = environment.config.property("jwt.issuer").getString(),
+        audience = environment.config.property("jwt.audience").getString(),
+        expiresIn = 365L * 1000L * 60L * 60L * 24L,
+        secret = System.getenv("JWT_SECRET")
+     )
+
     authentication {
         jwt {
             realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
