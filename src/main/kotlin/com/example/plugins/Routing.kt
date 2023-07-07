@@ -1,15 +1,13 @@
 package com.example.plugins
 
-import com.example.authenticate
 import com.example.data.routes.login.signInRoute
 import com.example.data.routes.login.signUpRoute
+import com.example.data.routes.user.authenticationTestRoute
+import com.example.data.routes.user.getUserIdRoute
 import com.example.data.user.MongoUserDataSource
 import com.example.db.getDatabaseClient
-import com.example.getSecretInfo
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
-import org.litote.kmongo.coroutine.coroutine
-import org.litote.kmongo.reactivestreams.KMongo
 
 fun Application.configureRouting() {
 
@@ -19,7 +17,7 @@ fun Application.configureRouting() {
     routing {
         signUpRoute(userDataSource)
         signInRoute(userDataSource)
-        authenticate()
-        getSecretInfo()
+        authenticationTestRoute()
+        getUserIdRoute()
     }
 }

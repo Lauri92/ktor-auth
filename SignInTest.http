@@ -20,3 +20,17 @@ Content-Type: application/json
   "username": "test-user123",
   "password": "testpassword123"
 }
+
+###
+### Request 3: GET userId Request ###
+### Providing invalid JWT will return 401 (Unauthorized)
+###
+GET http://127.0.0.1:8080/userId
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ1c2VycyIsImlzcyI6Imh0dHA6Ly8wLjAuMC4wOjgwODAiLCJleHAiOjE3MjAyNzQzMDMsInVzZXJJZCI6IjY0YTdmMjJlODA0MzIwN2Y1NzkwNGQwZCJ9.4p5XgpyGgaoMWsaRerzymSsbl02hY7xXNxAIhp2ARhU
+
+###
+### Request 4: GET authenticationTest Request ###
+### Providing invalid JWT will return 401 (Unauthorized)
+###
+GET http://127.0.0.1:8080/authenticationTest
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ1c2VycyIsImlzcyI6Imh0dHA6Ly8wLjAuMC4wOjgwODAiLCJleHAiOjE3MjAyNzQzMDMsInVzZXJJZCI6IjY0YTdmMjJlODA0MzIwN2Y1NzkwNGQwZCJ9.4p5XgpyGgaoMWsaRerzymSsbl02hY7xXNxAIhp2ARhU

@@ -1,4 +1,4 @@
-package com.example
+package com.example.data.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -7,17 +7,9 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.authenticate() {
+fun Route.getUserIdRoute() {
     authenticate {
-        get("authenticate") {
-            call.respond(HttpStatusCode.OK)
-        }
-    }
-}
-
-fun Route.getSecretInfo() {
-    authenticate {
-        get("secret") {
+        get("userId") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.getClaim("userId", String::class)
             call.respond(
@@ -27,15 +19,3 @@ fun Route.getSecretInfo() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
