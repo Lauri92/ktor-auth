@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class WordRequest(
     val hanzi: String,
     val pinyin: String,
-    val englishTranslations: List<String>
+    val englishTranslations: List<String>,
+    val category: String
 )

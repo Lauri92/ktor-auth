@@ -31,7 +31,8 @@ fun Route.wordRouting(
             val word = Word(
                 hanzi = request.hanzi,
                 pinyin = request.pinyin,
-                englishTranslations = request.englishTranslations
+                englishTranslations = request.englishTranslations,
+                category = request.category
             )
 
             val wasAcknowledged = wordDataSource.insertWord(word)
