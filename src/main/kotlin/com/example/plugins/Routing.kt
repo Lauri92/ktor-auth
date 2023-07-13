@@ -7,6 +7,7 @@ import com.example.routes.user.getUserIdRoute
 import com.example.data.user.MongoUserDataSource
 import com.example.data.word.MongoWordDataSource
 import com.example.db.getDatabaseClient
+import com.example.routes.upload.uploadRouting
 import com.example.routes.word.wordRouting
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
@@ -24,6 +25,7 @@ fun Application.configureRouting() {
         signUpRoute(userDataSource)
         signInRoute(userDataSource)
         wordRouting(wordDataSource)
+        uploadRouting()
         authenticationTestRoute()
         getUserIdRoute()
     }
