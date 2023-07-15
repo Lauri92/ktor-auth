@@ -8,6 +8,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.lang.Exception
 
 fun Route.wordRouting(
     wordDataSource: WordDataSource
@@ -54,7 +55,6 @@ fun Route.wordRouting(
         get {
             val allWords = wordDataSource.getAllWords().map(Word::toDto)
 
-            call.application.environment.log.info("Triggered allWords: $allWords")
             call.respond(
                 status = HttpStatusCode.OK,
                 message = allWords
@@ -62,17 +62,36 @@ fun Route.wordRouting(
         }
         get("/{id}") {
             val id = call.parameters["id"].toString()
-            wordDataSource.getWordById(id)
-                ?.let { foundWord ->
+
+            try {
+                wordDataSource.getWordById(id)?.let { foundWord ->
                     call.respond(
                         status = HttpStatusCode.OK,
                         message = foundWord.toDto()
                     )
                 }
-                ?: call.respond(
+                    ?: call.respond(
                     status = HttpStatusCode.NotFound,
                     message = ErrorResponse.NOT_FOUND_RESPONSE
                 )
+
+            } catch (e: Exception) {
+                when (e) {
+                    is IllegalArgumentException -> {
+                        call.respond(
+                            status = HttpStatusCode.NotFound,
+                            message = ErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
+                        )
+                    }
+
+                    else -> {
+                        call.respond(
+                            status = HttpStatusCode.NotFound,
+                            message = ErrorResponse.SOMETHING_WENT_WRONG
+                        )
+                    }
+                }
+            }
         }
     }
 }

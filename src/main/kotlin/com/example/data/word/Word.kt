@@ -44,5 +44,7 @@ data class ErrorResponse(val message: String) {
     companion object {
         val NOT_FOUND_RESPONSE = ErrorResponse("Word was not found")
         val BAD_REQUEST_RESPONSE = ErrorResponse("Invalid request")
+        val ILLEGAL_ARGUMENT_EXCEPTION = ErrorResponse("Illegal Argument Exception")
+        val SOMETHING_WENT_WRONG = ErrorResponse("Something went wrong")
     }
 }
