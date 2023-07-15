@@ -4,6 +4,7 @@ import org.bson.BsonValue
 import org.bson.types.ObjectId
 import org.litote.kmongo.Id
 import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.litote.kmongo.coroutine.replaceOne
 import org.litote.kmongo.eq
 import org.litote.kmongo.id.toId
 import org.litote.kmongo.regex
@@ -17,6 +18,23 @@ class MongoWordDataSource(
         val bsonId: Id<Word> = ObjectId(id).toId()
         return words.findOne(Word::id eq bsonId)
     }
+
+    override suspend fun updateWordById(
+        id: String,
+        request: Word
+    ): Boolean =
+        getWordById(id)
+            ?.let { word ->
+                val updateResult = words.replaceOne(
+                    word.copy(
+                        hanzi = request.hanzi,
+                        pinyin = request.pinyin,
+                        englishTranslations = request.englishTranslations,
+                        category = request.category
+                    )
+                )
+                updateResult.modifiedCount == 1L
+            } ?: false
 
     override suspend fun getWordByHanzi(hanzi: String): List<Word> {
         // Case sensitive. Duh..

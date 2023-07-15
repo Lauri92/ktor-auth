@@ -71,9 +71,9 @@ fun Route.wordRouting(
                     )
                 }
                     ?: call.respond(
-                    status = HttpStatusCode.NotFound,
-                    message = ErrorResponse.NOT_FOUND_RESPONSE
-                )
+                        status = HttpStatusCode.NotFound,
+                        message = ErrorResponse.NOT_FOUND_RESPONSE
+                    )
 
             } catch (e: Exception) {
                 when (e) {
@@ -89,6 +89,45 @@ fun Route.wordRouting(
                             status = HttpStatusCode.NotFound,
                             message = ErrorResponse.SOMETHING_WENT_WRONG
                         )
+                    }
+                }
+            }
+        }
+        authenticate {
+            put("/{id}") {
+                val id = call.parameters["id"].toString()
+                val wordRequest = call.receive<WordDto>()
+                val word = wordRequest.toWord()
+
+                try {
+                    val updatedSuccessfully = wordDataSource.updateWordById(id, word)
+
+                    if (updatedSuccessfully) {
+                        call.respond(
+                            status = HttpStatusCode.OK,
+                            message = "Updated successfully"
+                        )
+                    } else {
+                        call.respond(
+                            status = HttpStatusCode.BadRequest,
+                            message = ErrorResponse.BAD_REQUEST_RESPONSE
+                        )
+                    }
+                } catch (e: Exception) {
+                    when (e) {
+                        is IllegalArgumentException -> {
+                            call.respond(
+                                status = HttpStatusCode.BadRequest,
+                                message = ErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
+                            )
+                        }
+
+                        else -> {
+                            call.respond(
+                                status = HttpStatusCode.BadRequest,
+                                message = ErrorResponse.SOMETHING_WENT_WRONG
+                            )
+                        }
                     }
                 }
             }

@@ -13,8 +13,8 @@ fun Route.searchRouting(
     route("/search") {
         get {
             val hanzi = call.request.queryParameters["hanzi"].toString()
-            val foundPeople = wordDataSource.getWordByHanzi(hanzi = hanzi)?.map(Word::toDto)
-            call.respond(foundPeople!!)
+            val foundWords = wordDataSource.getWordByHanzi(hanzi = hanzi)?.map(Word::toDto)
+            call.respond(foundWords!!)
         }
     }
 }
