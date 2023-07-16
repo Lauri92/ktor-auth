@@ -53,8 +53,21 @@ fun Route.wordRouting(
             }
             put("/{id}") {
                 val id = call.parameters["id"].toString()
-                val wordRequest = call.receive<WordDto>()
-                val word = wordRequest.toWord()
+
+                val request = call.receiveNullable<WordDto>() ?: kotlin.run {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@put
+                }
+
+                if (blankFieldsExist(request)) {
+                    call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        message = "No blank fields allowed!"
+                    )
+                    return@put
+                }
+
+                val word = request.toWord()
 
                 try {
                     val updatedSuccessfully = wordDataSource.updateWordById(id, word)
