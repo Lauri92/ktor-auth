@@ -36,6 +36,11 @@ class MongoWordDataSource(
                 updateResult.modifiedCount == 1L
             } ?: false
 
+    override suspend fun deleteWordById(id: String): Boolean {
+        val deleteResult = words.deleteOneById(ObjectId(id))
+        return deleteResult.deletedCount == 1L
+    }
+
     override suspend fun getWordByHanzi(hanzi: String): List<Word> {
         // Case sensitive. Duh..
         val caseSensitiveTypeSafeFilter = Word::hanzi regex hanzi

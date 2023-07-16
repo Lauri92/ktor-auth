@@ -48,3 +48,11 @@ data class ErrorResponse(val message: String) {
         val SOMETHING_WENT_WRONG = ErrorResponse("Something went wrong")
     }
 }
+
+@Serializable
+data class SuccessResponse(val message: String) {
+    companion object {
+        val UPDATED_SUCCESSFULLY = SuccessResponse("Updated successfully")
+        val DELETED_SUCCESSFULLY = SuccessResponse("Deleted successfully")
+    }
+}
