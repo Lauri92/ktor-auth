@@ -8,6 +8,7 @@ import org.litote.kmongo.coroutine.replaceOne
 import org.litote.kmongo.eq
 import org.litote.kmongo.id.toId
 import org.litote.kmongo.regex
+import kotlin.math.log
 
 class MongoWordDataSource(
     db: CoroutineDatabase
@@ -22,19 +23,22 @@ class MongoWordDataSource(
     override suspend fun updateWordById(
         id: String,
         request: Word
-    ): Boolean =
-        getWordById(id)
-            ?.let { word ->
-                val updateResult = words.replaceOne(
-                    word.copy(
-                        hanzi = request.hanzi,
-                        pinyin = request.pinyin,
-                        englishTranslations = request.englishTranslations,
-                        category = request.category
-                    )
+    ): Boolean {
+        val word = getWordById(id)
+        return if (word != null) {
+            val updateResult = words.replaceOne(
+                word.copy(
+                    hanzi = request.hanzi,
+                    pinyin = request.pinyin,
+                    englishTranslations = request.englishTranslations,
+                    category = request.category
                 )
-                updateResult.modifiedCount == 1L
-            } ?: false
+            )
+            updateResult.modifiedCount == 1L
+        } else {
+            false
+        }
+    }
 
     override suspend fun deleteWordById(id: String): Boolean {
         val deleteResult = words.deleteOneById(ObjectId(id))
