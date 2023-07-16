@@ -13,6 +13,6 @@ fun blankFieldsExist(
         }
     }
 
-    return wordRequest.hanzi.isBlank() || wordRequest.pinyin.isBlank() ||
+    return wordRequest.hanzi.isBlank() || wordRequest.pinyin.isBlank() || wordRequest.category.isBlank() ||
             wordRequest.englishTranslations.isEmpty() || hasEmptyArrayItems
 }

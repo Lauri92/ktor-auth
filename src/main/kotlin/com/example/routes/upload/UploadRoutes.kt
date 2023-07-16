@@ -34,7 +34,6 @@ fun Route.uploadRouting() {
                         originalFileName = part.originalFileName ?: ""
                         fileExtension = File(originalFileName).extension
                         val contentLength = call.request.header(HttpHeaders.ContentLength)?.toInt()
-                        call.application.environment.log.info("Triggered contentLength: $contentLength")
 
                         if (contentLength != null) {
                             if (contentLength >= 1_048_576) {

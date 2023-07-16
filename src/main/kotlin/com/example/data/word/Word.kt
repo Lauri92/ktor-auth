@@ -16,10 +16,10 @@ data class Word(
 @Serializable
 data class WordDto(
     val id: String? = null,
-    val hanzi: String,
-    val pinyin: String,
-    val englishTranslations: List<String>,
-    val category: String,
+    var hanzi: String,
+    var pinyin: String,
+    var englishTranslations: List<String>,
+    var category: String,
 )
 
 fun Word.toDto() =
@@ -47,6 +47,7 @@ data class ErrorResponse(val message: String) {
         val BAD_REQUEST_RESPONSE = ErrorResponse(message = "Invalid request")
         val WRONG_FILETYPE_RESPONSE = ErrorResponse(message = "Wrong filetype")
         val TOO_LARGE_FILE_RESPONSE = ErrorResponse(message = "Files under 1MB are allowed (1,048,576 bytes)")
+        val NO_BLANK_FIELDS_ALLOWED_RESPONSE = ErrorResponse(message = "No blank fields allowed")
         val ILLEGAL_ARGUMENT_EXCEPTION = ErrorResponse(message = "Illegal Argument Exception")
         val SOMETHING_WENT_WRONG = ErrorResponse(message = "Something went wrong")
     }
@@ -58,4 +59,11 @@ data class SuccessResponse(val message: String) {
         val UPDATED_SUCCESSFULLY = SuccessResponse(message = "Updated successfully")
         val DELETED_SUCCESSFULLY = SuccessResponse(message = "Deleted successfully")
     }
+}
+
+enum class WordParts(val stringValue: String) {
+    HANZI(stringValue = "hanzi"),
+    PINYIN(stringValue = "pinyin"),
+    ENGLISH_TRANSLATIONS(stringValue = "englishTranslations"),
+    CATEGORY(stringValue = "category"),
 }
