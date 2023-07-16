@@ -1,5 +1,7 @@
 package com.example.routes.upload
 
+import com.example.data.word.ErrorResponse
+import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -37,6 +39,18 @@ fun Route.uploadRouting() {
             call.respondText("$fileDescription is uploaded to 'uploads/$fileName'")
         }
 
-    }
+        get("/{fileName}") {
+            val filename = call.parameters["fileName"]
+            val file = File("uploads/$filename")
 
+            if (file.exists()) {
+                call.respondFile(file)
+            } else {
+                call.respond(
+                    status = HttpStatusCode.NotFound,
+                    message = ErrorResponse.IMAGE_NOT_FOUND_RESPONSE
+                )
+            }
+        }
+    }
 }
