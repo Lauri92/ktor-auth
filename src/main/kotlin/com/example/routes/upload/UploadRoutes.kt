@@ -8,12 +8,17 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
+import java.util.UUID
+import kotlin.reflect.jvm.internal.impl.resolve.constants.ErrorValue.ErrorValueWithMessage
 
 fun Route.uploadRouting() {
 
     route("/upload") {
         var fileDescription = ""
+        var originalFileName = ""
         var fileName = ""
+        var fileExtension = ""
+        val allowedFileTypes = listOf("jpg", "jpeg", "png")
 
         post {
 
@@ -26,9 +31,19 @@ fun Route.uploadRouting() {
                     }
 
                     is PartData.FileItem -> {
-                        fileName = part.originalFileName as String
-                        val fileBytes = part.streamProvider().readBytes()
-                        File("uploads/$fileName").writeBytes(fileBytes)
+                        originalFileName = part.originalFileName ?: ""
+                        fileExtension = File(originalFileName).extension
+
+                        if (allowedFileTypes.contains(fileExtension)) {
+                            fileName = "${UUID.randomUUID()}.$fileExtension"
+                            val fileBytes = part.streamProvider().readBytes()
+                            File("uploads/$fileName").writeBytes(fileBytes)
+                        } else {
+                            call.respond(
+                                status = HttpStatusCode.BadRequest,
+                                message = ErrorResponse.WRONG_FILETYPE_RESPONSE
+                            )
+                        }
                     }
 
                     else -> {}
@@ -36,7 +51,10 @@ fun Route.uploadRouting() {
                 part.dispose()
             }
 
-            call.respondText("$fileDescription is uploaded to 'uploads/$fileName'")
+            call.respond(
+                status = HttpStatusCode.Created,
+                message = "$fileDescription is uploaded to 'uploads/$fileName'"
+            )
         }
 
         get("/{fileName}") {
