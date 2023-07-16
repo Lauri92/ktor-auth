@@ -1,6 +1,5 @@
 package com.example.data.word
 
-import org.bson.BsonValue
 import org.bson.types.ObjectId
 import org.litote.kmongo.Id
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -8,7 +7,6 @@ import org.litote.kmongo.coroutine.replaceOne
 import org.litote.kmongo.eq
 import org.litote.kmongo.id.toId
 import org.litote.kmongo.regex
-import kotlin.math.log
 
 class MongoWordDataSource(
     db: CoroutineDatabase
@@ -23,9 +21,9 @@ class MongoWordDataSource(
     override suspend fun updateWordById(
         id: String,
         request: Word
-    ): Boolean {
+    ): Id<Word>? {
         val word = getWordById(id)
-        return if (word != null) {
+        if (word != null) {
             val updateResult = words.replaceOne(
                 word.copy(
                     hanzi = request.hanzi,
@@ -34,9 +32,13 @@ class MongoWordDataSource(
                     category = request.category
                 )
             )
-            updateResult.modifiedCount == 1L
+            return if (updateResult.modifiedCount == 1L) {
+                word.id
+            } else {
+                null
+            }
         } else {
-            false
+            return null
         }
     }
 

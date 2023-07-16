@@ -29,12 +29,7 @@ fun Route.wordRouting(
                     return@post
                 }
 
-                val word = Word(
-                    hanzi = request.hanzi,
-                    pinyin = request.pinyin,
-                    englishTranslations = request.englishTranslations,
-                    category = request.category
-                )
+                val word = request.toWord()
 
                 val insertedId = wordDataSource.insertWord(word)
 
@@ -72,10 +67,10 @@ fun Route.wordRouting(
                 try {
                     val updatedSuccessfully = wordDataSource.updateWordById(id, word)
 
-                    if (updatedSuccessfully) {
+                    if (updatedSuccessfully != null) {
                         call.respond(
                             status = HttpStatusCode.OK,
-                            message = SuccessResponse.UPDATED_SUCCESSFULLY
+                            message = "Successfully updated $id"
                         )
                     } else {
                         call.respond(

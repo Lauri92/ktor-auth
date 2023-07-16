@@ -1,7 +1,6 @@
 package com.example.utils
 
 import com.example.data.word.WordDto
-import com.example.routes.word.models.WordRequest
 
 
 fun blankFieldsExist(

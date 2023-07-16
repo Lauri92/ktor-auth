@@ -42,17 +42,17 @@ fun WordDto.toWord(): Word =
 @Serializable
 data class ErrorResponse(val message: String) {
     companion object {
-        val NOT_FOUND_RESPONSE = ErrorResponse("Word was not found")
-        val BAD_REQUEST_RESPONSE = ErrorResponse("Invalid request")
-        val ILLEGAL_ARGUMENT_EXCEPTION = ErrorResponse("Illegal Argument Exception")
-        val SOMETHING_WENT_WRONG = ErrorResponse("Something went wrong")
+        val NOT_FOUND_RESPONSE = ErrorResponse(message = "Word was not found")
+        val BAD_REQUEST_RESPONSE = ErrorResponse(message = "Invalid request")
+        val ILLEGAL_ARGUMENT_EXCEPTION = ErrorResponse(message = "Illegal Argument Exception")
+        val SOMETHING_WENT_WRONG = ErrorResponse(message = "Something went wrong")
     }
 }
 
 @Serializable
 data class SuccessResponse(val message: String) {
     companion object {
-        val UPDATED_SUCCESSFULLY = SuccessResponse("Updated successfully")
-        val DELETED_SUCCESSFULLY = SuccessResponse("Deleted successfully")
+        val UPDATED_SUCCESSFULLY = SuccessResponse(message = "Updated successfully")
+        val DELETED_SUCCESSFULLY = SuccessResponse(message = "Deleted successfully")
     }
 }
