@@ -33,6 +33,18 @@ fun Route.uploadRouting() {
                     is PartData.FileItem -> {
                         originalFileName = part.originalFileName ?: ""
                         fileExtension = File(originalFileName).extension
+                        val contentLength = call.request.header(HttpHeaders.ContentLength)?.toInt()
+                        call.application.environment.log.info("Triggered contentLength: $contentLength")
+
+                        if (contentLength != null) {
+                            if (contentLength >= 1_048_576) {
+                                call.respond(
+                                    status = HttpStatusCode.BadRequest,
+                                    message = ErrorResponse.TOO_LARGE_FILE_RESPONSE
+                                )
+                            }
+                            return@forEachPart
+                        }
 
                         if (allowedFileTypes.contains(fileExtension)) {
                             fileName = "${UUID.randomUUID()}.$fileExtension"
@@ -43,6 +55,7 @@ fun Route.uploadRouting() {
                                 status = HttpStatusCode.BadRequest,
                                 message = ErrorResponse.WRONG_FILETYPE_RESPONSE
                             )
+                            return@forEachPart
                         }
                     }
 

@@ -46,6 +46,7 @@ data class ErrorResponse(val message: String) {
         val IMAGE_NOT_FOUND_RESPONSE = ErrorResponse(message = "Image was not found")
         val BAD_REQUEST_RESPONSE = ErrorResponse(message = "Invalid request")
         val WRONG_FILETYPE_RESPONSE = ErrorResponse(message = "Wrong filetype")
+        val TOO_LARGE_FILE_RESPONSE = ErrorResponse(message = "Files under 1MB are allowed (1,048,576 bytes)")
         val ILLEGAL_ARGUMENT_EXCEPTION = ErrorResponse(message = "Illegal Argument Exception")
         val SOMETHING_WENT_WRONG = ErrorResponse(message = "Something went wrong")
     }
