@@ -9,7 +9,9 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
 import java.lang.Exception
+import java.util.*
 
 fun Route.wordRouting(
     wordDataSource: WordDataSource
@@ -20,30 +22,25 @@ fun Route.wordRouting(
 
                 val multiPartData = call.receiveMultipart()
                 val request = WordDto(hanzi = "", pinyin = "", englishTranslations = listOf(), category = "")
+                var fileExtension = ""
+                val allowedFileTypes = listOf("jpg", "jpeg", "png")
+                var contentLength: Int? = null
+                var fileBytes: ByteArray? = null
+
 
                 multiPartData.forEachPart { part ->
                     when (part) {
-                        is PartData.BinaryChannelItem -> {
-                            call.respond(
-                                status = HttpStatusCode.BadRequest,
-                                message = ErrorResponse.BAD_REQUEST_RESPONSE
-                            )
-                        }
+                        is PartData.BinaryChannelItem -> genericFailResponse(call, ErrorResponse.BAD_REQUEST_RESPONSE)
 
-                        is PartData.BinaryItem -> {
-                            call.respond(
-                                status = HttpStatusCode.BadRequest,
-                                message = ErrorResponse.BAD_REQUEST_RESPONSE
-                            )
-                        }
+                        is PartData.BinaryItem -> genericFailResponse(call, ErrorResponse.BAD_REQUEST_RESPONSE)
 
                         is PartData.FileItem -> {
-                            //TODO: HANDLE FILE UPLOAD
+                            fileBytes = part.streamProvider().readBytes()
+                            fileExtension = File(part.originalFileName ?: "").extension
+                            contentLength = call.request.header(HttpHeaders.ContentLength)?.toInt()
                         }
 
                         is PartData.FormItem -> {
-                            call.application.environment.log.info("Triggered part.name: ${part.name}")
-                            call.application.environment.log.info("Triggered part.value: ${part.value}")
                             when (part.name) {
                                 WordParts.HANZI.stringValue -> {
                                     request.hanzi = part.value
@@ -64,19 +61,36 @@ fun Route.wordRouting(
                                 WordParts.CATEGORY.stringValue -> {
                                     request.category = part.value
                                 }
-
                             }
                         }
                     }
-
+                    part.dispose()
                 }
 
-                call.application.environment.log.info("Triggered request before validation: $request")
-
                 if (blankFieldsExist(request)) {
+                    genericFailResponse(call, ErrorResponse.NO_BLANK_FIELDS_ALLOWED_RESPONSE)
+                    return@post
+                }
+
+                if (contentLength != null) {
+                    if (contentLength!! >= 1_048_576) {
+                        call.respond(
+                            status = HttpStatusCode.BadRequest,
+                            message = ErrorResponse.TOO_LARGE_FILE_RESPONSE
+                        )
+                        return@post
+                    }
+                } else {
+                    return@post
+                }
+
+                if (allowedFileTypes.contains(fileExtension) && fileBytes != null) {
+                    val fileName = "${UUID.randomUUID()}.$fileExtension"
+                    File("uploads/$fileName").writeBytes(fileBytes!!)
+                } else {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = ErrorResponse.NO_BLANK_FIELDS_ALLOWED_RESPONSE
+                        message = ErrorResponse.WRONG_FILETYPE_RESPONSE
                     )
                     return@post
                 }
@@ -86,10 +100,7 @@ fun Route.wordRouting(
                 val insertedId = wordDataSource.insertWord(word)
 
                 if (insertedId == null) {
-                    call.respond(
-                        status = HttpStatusCode.BadRequest,
-                        message = ErrorResponse.SOMETHING_WENT_WRONG
-                    )
+                    genericFailResponse(call, ErrorResponse.SOMETHING_WENT_WRONG)
                     return@post
                 }
 
@@ -226,4 +237,11 @@ fun Route.wordRouting(
             }
         }
     }
+}
+
+private suspend fun genericFailResponse(call: ApplicationCall, badRequestResponse: ErrorResponse) {
+    call.respond(
+        status = HttpStatusCode.BadRequest,
+        message = badRequestResponse
+    )
 }
