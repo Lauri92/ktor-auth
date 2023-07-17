@@ -11,6 +11,7 @@ data class Word(
     val pinyin: String,
     val englishTranslations: List<String>,
     val category: String,
+    val imageUrl: String,
 )
 
 @Serializable
@@ -20,6 +21,7 @@ data class WordDto(
     var pinyin: String,
     var englishTranslations: List<String>,
     var category: String,
+    var imageUrl: String,
 )
 
 fun Word.toDto() =
@@ -28,7 +30,8 @@ fun Word.toDto() =
         hanzi = this.hanzi,
         pinyin = this.pinyin,
         englishTranslations = this.englishTranslations,
-        category = this.category
+        category = this.category,
+        imageUrl = this.imageUrl
     )
 
 fun WordDto.toWord(): Word =
@@ -36,7 +39,8 @@ fun WordDto.toWord(): Word =
         hanzi = this.hanzi,
         pinyin = this.pinyin,
         englishTranslations = this.englishTranslations,
-        category = this.category
+        category = this.category,
+        imageUrl = this.imageUrl
     )
 
 @Serializable

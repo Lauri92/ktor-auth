@@ -16,12 +16,13 @@ import java.util.*
 fun Route.wordRouting(
     wordDataSource: WordDataSource
 ) {
-    route("/word") {
-        authenticate {
+    authenticate {
+        route("/word") {
             post {
 
                 val multiPartData = call.receiveMultipart()
-                val request = WordDto(hanzi = "", pinyin = "", englishTranslations = listOf(), category = "")
+                val request =
+                    WordDto(hanzi = "", pinyin = "", englishTranslations = listOf(), category = "", imageUrl = "")
                 var fileExtension = ""
                 val allowedFileTypes = listOf("jpg", "jpeg", "png")
                 var contentLength: Int? = null
@@ -85,8 +86,9 @@ fun Route.wordRouting(
                 }
 
                 if (allowedFileTypes.contains(fileExtension) && fileBytes != null) {
-                    val fileName = "${UUID.randomUUID()}.$fileExtension"
-                    File("uploads/$fileName").writeBytes(fileBytes!!)
+                    val filepath = "uploads/${UUID.randomUUID()}.$fileExtension"
+                    File(filepath).writeBytes(fileBytes!!)
+                    request.imageUrl = filepath
                 } else {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
@@ -194,44 +196,44 @@ fun Route.wordRouting(
                 }
 
             }
-        }
-        get {
-            val allWords = wordDataSource.getAllWords().map(Word::toDto)
+            get {
+                val allWords = wordDataSource.getAllWords().map(Word::toDto)
 
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = allWords
-            )
-        }
-        get("/{id}") {
-            val id = call.parameters["id"].toString()
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = allWords
+                )
+            }
+            get("/{id}") {
+                val id = call.parameters["id"].toString()
 
-            try {
-                wordDataSource.getWordById(id)?.let { foundWord ->
-                    call.respond(
-                        status = HttpStatusCode.OK,
-                        message = foundWord.toDto()
-                    )
-                }
-                    ?: call.respond(
-                        status = HttpStatusCode.NotFound,
-                        message = ErrorResponse.NOT_FOUND_RESPONSE
-                    )
-
-            } catch (e: Exception) {
-                when (e) {
-                    is IllegalArgumentException -> {
+                try {
+                    wordDataSource.getWordById(id)?.let { foundWord ->
                         call.respond(
-                            status = HttpStatusCode.NotFound,
-                            message = ErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
+                            status = HttpStatusCode.OK,
+                            message = foundWord.toDto()
                         )
                     }
-
-                    else -> {
-                        call.respond(
+                        ?: call.respond(
                             status = HttpStatusCode.NotFound,
-                            message = ErrorResponse.SOMETHING_WENT_WRONG
+                            message = ErrorResponse.NOT_FOUND_RESPONSE
                         )
+
+                } catch (e: Exception) {
+                    when (e) {
+                        is IllegalArgumentException -> {
+                            call.respond(
+                                status = HttpStatusCode.NotFound,
+                                message = ErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
+                            )
+                        }
+
+                        else -> {
+                            call.respond(
+                                status = HttpStatusCode.NotFound,
+                                message = ErrorResponse.SOMETHING_WENT_WRONG
+                            )
+                        }
                     }
                 }
             }
@@ -239,7 +241,10 @@ fun Route.wordRouting(
     }
 }
 
-private suspend fun genericFailResponse(call: ApplicationCall, badRequestResponse: ErrorResponse) {
+private suspend fun genericFailResponse(
+    call: ApplicationCall,
+    badRequestResponse: ErrorResponse
+) {
     call.respond(
         status = HttpStatusCode.BadRequest,
         message = badRequestResponse
