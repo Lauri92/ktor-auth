@@ -29,7 +29,8 @@ class MongoWordDataSource(
                     hanzi = request.hanzi,
                     pinyin = request.pinyin,
                     englishTranslations = request.englishTranslations,
-                    category = request.category
+                    category = request.category,
+                    imageUrl = request.imageUrl
                 )
             )
             return if (updateResult.modifiedCount == 1L) {

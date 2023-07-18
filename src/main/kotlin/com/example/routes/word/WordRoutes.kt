@@ -212,6 +212,10 @@ private suspend fun handlePostAndPut(
         return
     } else {
         if (id != null) {
+
+            val previousImageUrl = wordDataSource.getWordById(id)?.imageUrl
+            previousImageUrl?.let { File(it).delete() }
+
             val updatedSuccessfully = wordDataSource.updateWordById(id, word)
 
             if (updatedSuccessfully != null) {
