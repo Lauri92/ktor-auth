@@ -153,8 +153,9 @@ private suspend fun handlePostAndPut(
                     WordParts.ENGLISH_TRANSLATIONS.stringValue -> {
                         val stringList = part.value
                             .removeSurrounding("[", "]")
-                            .split(", ")
-                            .map { it.removeSurrounding("\"") }
+                            .replace("\"", "")
+                            .split(",")
+                            .map { it.trim() }
                         request.englishTranslations = stringList
                     }
 
