@@ -1,9 +1,9 @@
 package com.example.routes.login
 
 import com.example.routes.login.auth_models.AuthRequest
-import com.example.routes.login.auth_models.AuthResponse
+import com.example.routes.login.auth_models.LogInResponse
 import com.example.data.user.MongoUserDataSource
-import com.example.data.word.ErrorResponse
+import com.example.data.user.UserErrorResponse
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.hashing.SaltedHash
 import com.example.security.token.JwtTokenService
@@ -29,11 +29,11 @@ fun Route.signInRoute(
         )
     }
 
-    post("signin") {
+    post("login") {
         val request = call.receiveNullable<AuthRequest>() ?: kotlin.run {
             call.respond(
                 status = HttpStatusCode.BadRequest,
-                message = ErrorResponse.BAD_REQUEST_RESPONSE
+                message = UserErrorResponse.BAD_REQUEST_RESPONSE
             )
             return@post
         }
@@ -42,7 +42,7 @@ fun Route.signInRoute(
         if (user == null) {
             call.respond(
                 status = HttpStatusCode.Conflict,
-                message = ErrorResponse.WRONG_CREDENTIALS_RESPONSE
+                message = UserErrorResponse.WRONG_CREDENTIALS_RESPONSE
             )
             return@post
         }
@@ -57,7 +57,7 @@ fun Route.signInRoute(
         if (!isValidPassword) {
             call.respond(
                 status = HttpStatusCode.Conflict,
-                message = ErrorResponse.WRONG_CREDENTIALS_RESPONSE
+                message = UserErrorResponse.WRONG_CREDENTIALS_RESPONSE
             )
             return@post
         }
@@ -72,7 +72,7 @@ fun Route.signInRoute(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = AuthResponse(
+            message = LogInResponse(
                 token = token
             )
         )

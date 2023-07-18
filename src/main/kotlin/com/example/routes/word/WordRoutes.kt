@@ -39,12 +39,12 @@ fun Route.wordRouting(
                     if (deletedSuccessfully) {
                         call.respond(
                             status = HttpStatusCode.OK,
-                            message = SuccessResponse.DELETED_SUCCESSFULLY
+                            message = WordSuccessResponse.DELETED_SUCCESSFULLY_RESPONSE
                         )
                     } else {
                         call.respond(
                             status = HttpStatusCode.NotFound,
-                            message = ErrorResponse.NOT_FOUND_RESPONSE
+                            message = WordErrorResponse.NOT_FOUND_RESPONSE
                         )
                     }
                 } catch (e: Exception) {
@@ -52,14 +52,14 @@ fun Route.wordRouting(
                         is IllegalArgumentException -> {
                             call.respond(
                                 status = HttpStatusCode.BadRequest,
-                                message = ErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
+                                message = WordErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
                             )
                         }
 
                         else -> {
                             call.respond(
                                 status = HttpStatusCode.BadRequest,
-                                message = ErrorResponse.SOMETHING_WENT_WRONG
+                                message = WordErrorResponse.SOMETHING_WENT_WRONG_RESPONSE
                             )
                         }
                     }
@@ -86,7 +86,7 @@ fun Route.wordRouting(
                     }
                         ?: call.respond(
                             status = HttpStatusCode.NotFound,
-                            message = ErrorResponse.NOT_FOUND_RESPONSE
+                            message = WordErrorResponse.NOT_FOUND_RESPONSE
                         )
 
                 } catch (e: Exception) {
@@ -94,14 +94,14 @@ fun Route.wordRouting(
                         is IllegalArgumentException -> {
                             call.respond(
                                 status = HttpStatusCode.NotFound,
-                                message = ErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
+                                message = WordErrorResponse.ILLEGAL_ARGUMENT_EXCEPTION
                             )
                         }
 
                         else -> {
                             call.respond(
                                 status = HttpStatusCode.NotFound,
-                                message = ErrorResponse.SOMETHING_WENT_WRONG
+                                message = WordErrorResponse.SOMETHING_WENT_WRONG_RESPONSE
                             )
                         }
                     }
@@ -130,9 +130,9 @@ private suspend fun handlePostAndPut(
 
     multiPartData.forEachPart { part ->
         when (part) {
-            is PartData.BinaryChannelItem -> genericFailResponse(call, ErrorResponse.BAD_REQUEST_RESPONSE)
+            is PartData.BinaryChannelItem -> genericFailResponse(call, WordErrorResponse.BAD_REQUEST_RESPONSE)
 
-            is PartData.BinaryItem -> genericFailResponse(call, ErrorResponse.BAD_REQUEST_RESPONSE)
+            is PartData.BinaryItem -> genericFailResponse(call, WordErrorResponse.BAD_REQUEST_RESPONSE)
 
             is PartData.FileItem -> {
                 fileBytes = part.streamProvider().readBytes()
@@ -169,7 +169,7 @@ private suspend fun handlePostAndPut(
     }
 
     if (blankFieldsExist(request)) {
-        genericFailResponse(call, ErrorResponse.NO_BLANK_FIELDS_ALLOWED_RESPONSE)
+        genericFailResponse(call, WordErrorResponse.NO_BLANK_FIELDS_ALLOWED_RESPONSE)
         return
     }
 
@@ -177,7 +177,7 @@ private suspend fun handlePostAndPut(
         if (contentLength!! >= 1_048_576) {
             call.respond(
                 status = HttpStatusCode.BadRequest,
-                message = ErrorResponse.TOO_LARGE_FILE_RESPONSE
+                message = WordErrorResponse.TOO_LARGE_FILE_RESPONSE
             )
             return
         }
@@ -192,7 +192,7 @@ private suspend fun handlePostAndPut(
     } else {
         call.respond(
             status = HttpStatusCode.BadRequest,
-            message = ErrorResponse.WRONG_FILETYPE_RESPONSE
+            message = WordErrorResponse.WRONG_FILETYPE_RESPONSE
         )
         return
     }
@@ -202,7 +202,7 @@ private suspend fun handlePostAndPut(
     if (!isPutRequest) {
         val insertedId = wordDataSource.insertWord(word)
         if (insertedId == null) {
-            genericFailResponse(call, ErrorResponse.SOMETHING_WENT_WRONG)
+            genericFailResponse(call, WordErrorResponse.SOMETHING_WENT_WRONG_RESPONSE)
             return
         }
         call.respond(
@@ -230,13 +230,13 @@ private suspend fun handlePostAndPut(
             } else {
                 call.respond(
                     status = HttpStatusCode.BadRequest,
-                    message = ErrorResponse.BAD_REQUEST_RESPONSE
+                    message = WordErrorResponse.BAD_REQUEST_RESPONSE
                 )
             }
         } else {
             call.respond(
                 status = HttpStatusCode.BadRequest,
-                message = ErrorResponse.BAD_REQUEST_RESPONSE
+                message = WordErrorResponse.BAD_REQUEST_RESPONSE
             )
         }
     }
@@ -244,7 +244,7 @@ private suspend fun handlePostAndPut(
 
 private suspend fun genericFailResponse(
     call: ApplicationCall,
-    badRequestResponse: ErrorResponse
+    badRequestResponse: WordErrorResponse
 ) {
     call.respond(
         status = HttpStatusCode.BadRequest,

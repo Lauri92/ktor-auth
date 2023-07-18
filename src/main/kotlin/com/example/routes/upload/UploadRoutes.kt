@@ -1,6 +1,6 @@
 package com.example.routes.upload
 
-import com.example.data.word.ErrorResponse
+import com.example.data.word.WordErrorResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -18,7 +18,7 @@ fun Route.uploadRouting() {
             } else {
                 call.respond(
                     status = HttpStatusCode.NotFound,
-                    message = ErrorResponse.IMAGE_NOT_FOUND_RESPONSE
+                    message = WordErrorResponse.IMAGE_NOT_FOUND_RESPONSE
                 )
             }
         }

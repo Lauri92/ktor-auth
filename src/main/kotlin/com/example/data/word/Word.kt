@@ -44,25 +44,24 @@ fun WordDto.toWord(): Word =
     )
 
 @Serializable
-data class ErrorResponse(val message: String) {
+data class WordErrorResponse(val message: String) {
     companion object {
-        val NOT_FOUND_RESPONSE = ErrorResponse(message = "Word was not found")
-        val IMAGE_NOT_FOUND_RESPONSE = ErrorResponse(message = "Image was not found")
-        val BAD_REQUEST_RESPONSE = ErrorResponse(message = "Invalid request")
-        val WRONG_CREDENTIALS_RESPONSE = ErrorResponse(message = "Invalid credentials")
-        val WRONG_FILETYPE_RESPONSE = ErrorResponse(message = "Wrong filetype")
-        val TOO_LARGE_FILE_RESPONSE = ErrorResponse(message = "Files under 1MB are allowed (1,048,576 bytes)")
-        val NO_BLANK_FIELDS_ALLOWED_RESPONSE = ErrorResponse(message = "No blank fields allowed")
-        val ILLEGAL_ARGUMENT_EXCEPTION = ErrorResponse(message = "Illegal Argument Exception")
-        val SOMETHING_WENT_WRONG = ErrorResponse(message = "Something went wrong")
+        val NOT_FOUND_RESPONSE = WordErrorResponse(message = "Word was not found")
+        val IMAGE_NOT_FOUND_RESPONSE = WordErrorResponse(message = "Image was not found")
+        val BAD_REQUEST_RESPONSE = WordErrorResponse(message = "Invalid request")
+        val WRONG_FILETYPE_RESPONSE = WordErrorResponse(message = "Wrong filetype")
+        val TOO_LARGE_FILE_RESPONSE = WordErrorResponse(message = "Files under 1MB are allowed (1,048,576 bytes)")
+        val NO_BLANK_FIELDS_ALLOWED_RESPONSE = WordErrorResponse(message = "No blank fields allowed")
+        val ILLEGAL_ARGUMENT_EXCEPTION = WordErrorResponse(message = "Illegal Argument Exception")
+        val SOMETHING_WENT_WRONG_RESPONSE = WordErrorResponse(message = "Something went wrong")
     }
 }
 
 @Serializable
-data class SuccessResponse(val message: String) {
+data class WordSuccessResponse(val message: String) {
     companion object {
-        val UPDATED_SUCCESSFULLY = SuccessResponse(message = "Updated successfully")
-        val DELETED_SUCCESSFULLY = SuccessResponse(message = "Deleted successfully")
+        val UPDATED_SUCCESSFULLY = WordSuccessResponse(message = "Updated successfully")
+        val DELETED_SUCCESSFULLY_RESPONSE = WordSuccessResponse(message = "Deleted successfully")
     }
 }
 
