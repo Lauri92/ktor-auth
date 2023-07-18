@@ -3,6 +3,7 @@ package com.example.routes.login
 import com.example.routes.login.auth_models.AuthRequest
 import com.example.routes.login.auth_models.AuthResponse
 import com.example.data.user.MongoUserDataSource
+import com.example.data.word.ErrorResponse
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.hashing.SaltedHash
 import com.example.security.token.JwtTokenService
@@ -30,13 +31,19 @@ fun Route.signInRoute(
 
     post("signin") {
         val request = call.receiveNullable<AuthRequest>() ?: kotlin.run {
-            call.respond(HttpStatusCode.BadRequest)
+            call.respond(
+                status = HttpStatusCode.BadRequest,
+                message = ErrorResponse.BAD_REQUEST_RESPONSE
+            )
             return@post
         }
 
         val user = userDataSource.getUserByUsername(request.username)
         if (user == null) {
-            call.respond(HttpStatusCode.Conflict, "Incorrect username or password, username not found!")
+            call.respond(
+                status = HttpStatusCode.Conflict,
+                message = ErrorResponse.WRONG_CREDENTIALS_RESPONSE
+            )
             return@post
         }
 
@@ -48,7 +55,10 @@ fun Route.signInRoute(
             )
         )
         if (!isValidPassword) {
-            call.respond(HttpStatusCode.Conflict, "Incorrect username or password, password is not valid!")
+            call.respond(
+                status = HttpStatusCode.Conflict,
+                message = ErrorResponse.WRONG_CREDENTIALS_RESPONSE
+            )
             return@post
         }
 
