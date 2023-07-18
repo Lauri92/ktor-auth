@@ -207,7 +207,9 @@ private suspend fun handlePostAndPut(
         }
         call.respond(
             status = HttpStatusCode.Created,
-            message = "Successfully inserted $insertedId"
+            message = WordInsertMessage(
+                id = insertedId.toString()
+            )
         )
         return
     } else {
@@ -221,7 +223,9 @@ private suspend fun handlePostAndPut(
             if (updatedSuccessfully != null) {
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = "Successfully updated $id"
+                    message = WordUpdateMessage(
+                        id = id
+                    )
                 )
             } else {
                 call.respond(

@@ -66,6 +66,19 @@ data class SuccessResponse(val message: String) {
     }
 }
 
+@Serializable
+data class WordInsertMessage(
+    val message: String = "Created successfully",
+    val id: String
+)
+
+@Serializable
+data class WordUpdateMessage(
+    val message: String = "Updated successfully",
+    val id: String
+)
+
+
 enum class WordParts(val stringValue: String) {
     HANZI(stringValue = "hanzi"),
     PINYIN(stringValue = "pinyin"),
