@@ -1,6 +1,6 @@
 package com.example.plugins
 
-import com.example.routes.login.signInRoute
+import com.example.routes.login.logInRoute
 import com.example.routes.login.signUpRoute
 import com.example.routes.user.authenticationTestRoute
 import com.example.routes.user.getUserIdRoute
@@ -24,7 +24,7 @@ fun Application.configureRouting() {
         //call.application.environment.log.info("Hello from ~word!")
 
         signUpRoute(userDataSource)
-        signInRoute(userDataSource)
+        logInRoute(userDataSource)
         wordRouting(wordDataSource)
         searchRouting(wordDataSource)
         uploadRouting()

@@ -4,8 +4,9 @@ import com.example.routes.login.auth_models.AuthRequest
 import com.example.data.user.MongoUserDataSource
 import com.example.data.user.User
 import com.example.data.user.UserErrorResponse
-import com.example.data.user.UserSuccessResponse
-import com.example.security.hashing.SHA256HashingService
+import com.example.routes.login.auth_models.LogInResponse
+import com.example.security.AuthTools
+import com.example.security.token.TokenClaim
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -15,6 +16,9 @@ import io.ktor.server.routing.*
 fun Route.signUpRoute(
     userDataSource: MongoUserDataSource,
 ) {
+
+    val authTools = AuthTools(environment = environment)
+
     post("register") {
 
         val request = call.receiveNullable<AuthRequest>() ?: kotlin.run {
@@ -45,8 +49,7 @@ fun Route.signUpRoute(
             return@post
         }
 
-        val hashingService = SHA256HashingService()
-        val saltedHash = hashingService.generateSaltedHash(request.password)
+        val saltedHash = authTools.hashingService.generateSaltedHash(request.password)
         val user = User(
             username = request.username,
             password = saltedHash.hash,
@@ -63,9 +66,19 @@ fun Route.signUpRoute(
             return@post
         }
 
+        val token = authTools.tokenService.generate(
+            config = authTools.tokenConfig!!,
+            TokenClaim(
+                name = "userId",
+                value = user.id.toString()
+            )
+        )
+
         call.respond(
             status = HttpStatusCode.OK,
-            message = UserSuccessResponse.USER_CREATED_RESPONSE
+            message = LogInResponse(
+                token = token
+            )
         )
     }
 }
