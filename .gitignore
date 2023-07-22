@@ -38,3 +38,5 @@ out/
 APItests.http
 
 uploads
+
+node_modules

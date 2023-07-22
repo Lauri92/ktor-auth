@@ -39,4 +39,6 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
 
     implementation("commons-codec:commons-codec:$commons_codec_version")
+
+    implementation ("com.caoccao.javet:javet-macos:2.2.1")
 }

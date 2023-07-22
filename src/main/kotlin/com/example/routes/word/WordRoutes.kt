@@ -1,5 +1,7 @@
 package com.example.routes.word
 
+import com.caoccao.javet.interop.V8Host
+import com.caoccao.javet.interop.V8Runtime
 import com.example.data.word.*
 import com.example.utils.blankFieldsExist
 import io.ktor.http.*
@@ -10,8 +12,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
-import java.lang.Exception
 import java.util.*
+
 
 fun Route.wordRouting(
     wordDataSource: WordDataSource
@@ -76,6 +78,29 @@ fun Route.wordRouting(
             }
             get("/{id}") {
                 val id = call.parameters["id"].toString()
+
+                V8Host.getNodeInstance().createV8Runtime<V8Runtime>().use { v8Runtime ->
+
+                    val ttsString = "北京人"
+
+                    val value = v8Runtime.getExecutor(
+                        // JS Script to be run
+                        """
+                            'use strict';
+                            const googleTTS = require('google-tts-api');
+                            const url = googleTTS.getAudioUrl('$ttsString', {
+                                lang: 'zh',
+                                slow: false,
+                                host: 'https://translate.google.com',
+                                })
+                        """ +
+                                /* Returned value --> */        "url"
+                    ).executeString()
+
+                    println("Value3 is $value")
+
+                }
+
 
                 try {
                     wordDataSource.getWordById(id)?.let { foundWord ->
