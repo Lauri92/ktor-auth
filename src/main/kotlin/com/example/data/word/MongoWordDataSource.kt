@@ -1,5 +1,6 @@
 package com.example.data.word
 
+import com.example.routes.search.SearchProperty
 import org.bson.types.ObjectId
 import org.litote.kmongo.Id
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -48,9 +49,20 @@ class MongoWordDataSource(
         return deleteResult.deletedCount == 1L
     }
 
-    override suspend fun getWordByHanzi(hanzi: String): List<Word> {
-        // Case sensitive. Duh..
-        val caseSensitiveTypeSafeFilter = Word::hanzi regex hanzi
+    override suspend fun getWordByProperty(
+        property: SearchProperty,
+        value: String
+    ): List<Word> {
+
+        println("Property is $property")
+        println("Value is $value")
+
+        val caseSensitiveTypeSafeFilter = when (property){
+            SearchProperty.HANZI -> Word::hanzi eq value
+            SearchProperty.CATEGORY -> Word::category eq value.replaceFirstChar { c -> c.uppercase() }
+            SearchProperty.PINYIN -> Word::pinyin eq value.replaceFirstChar { c -> c.uppercase() }
+        }
+
         return words.find(caseSensitiveTypeSafeFilter).toList()
     }
 
